@@ -4,7 +4,11 @@ This document describes the system architecture and deployment model.
 
 ## Repository / Deployment Model
 
-Each installation of the task manager should behave like a standalone project repository:
+**The data directory IS the repository.** Each data directory is a complete, self-contained task repository that can operate independently.
+
+### Single Repository Characteristics
+
+Each task repository (data directory) should behave like a standalone project repository:
 
 * A task repository is **self-contained** and can run entirely locally with no remote configured.
 * All functionality (creating, listing, updating tasks, etc.) must work with:
@@ -12,7 +16,7 @@ Each installation of the task manager should behave like a standalone project re
   * No network access.
   * No central server.
   * No git remote.
-* If desired, the same repository can be linked to one or more remotes (e.g., GitHub, GitLab, a bare repo on a server), and:
+* If desired, a repository can be linked to one or more git remotes (e.g., GitHub, GitLab, a bare repo on a server), and:
 
   * Sync is handled using normal `git` workflows (`pull`, `push`, `fetch`, etc.).
   * There is no assumption of a single "canonical" or always-on server.
@@ -21,14 +25,32 @@ Each installation of the task manager should behave like a standalone project re
   * Clone, branch, commit, merge, push, and pull are all valid workflows.
   * Conflicts are resolved using standard git tooling.
 
-In other words, a task repo should behave exactly like a code repo: fully functional on its own, with optional remotes for sync and collaboration, but no hard dependency on them.
+In other words, a task repository should behave exactly like a code repository: fully functional on its own, with optional remotes for sync and collaboration, but no hard dependency on them.
+
+### Multiple Repositories
+
+A single server or user can have **multiple data directories**, each acting as an independent repository:
+
+* Each data directory is a separate repository with its own tasks and configuration
+* Each data directory can connect to **different remote repositories** (or no remote at all)
+* This allows users to:
+  * Separate personal and work tasks into different repositories
+  * Maintain multiple projects with independent sync targets
+  * Test or experiment with repositories without affecting production data
+* The CLI `--data-dir` option allows users to specify which repository to operate on
+* Global configuration can define default data directory, but users can override per-command
+
+This design supports complex workflows where a user might have:
+* `~/tasks/personal/` → syncs to `github.com/user/personal-tasks`
+* `~/tasks/work/` → syncs to `gitlab.com/company/work-tasks`
+* `~/tasks/experimental/` → local-only, no remote
 
 ### Repository Structure
 
-A task repository has the following structure:
+A task repository (data directory) has the following structure:
 
 ```
-task-repo/
+data-directory/         # This IS the repository
 ├── tasks/              # Directory containing task files (TOML)
 │   ├── <task-id>.toml
 │   └── ...
@@ -36,24 +58,45 @@ task-repo/
 └── .git/               # Git repository (if using git for sync)
 ```
 
-The `config.toml` file in the repository root contains:
+**Important**: The data directory itself is the repository. There is no separate "repository" concept—the data directory contains everything needed to function as a complete task repository.
+
+The `config.toml` file in the data directory root contains:
 * Hook definitions (see [Design Decisions](design-decisions.md))
 * Repository-specific settings
+* Overrides for global configuration
 * Optional metadata
 
-This structure keeps configuration version-controlled alongside tasks, ensuring hooks and settings sync across machines.
+This structure keeps configuration version-controlled alongside tasks, ensuring hooks and settings sync across machines when the repository is cloned or synced.
+
+### Configuration File Locations
+
+The system uses multiple configuration files:
+
+* **Global config**: `$XDG_CONFIG_HOME/mytask/config.toml` (typically `~/.config/mytask/config.toml`)
+  * User-wide defaults and preferences
+  * Default data directory location
+  
+* **Data directory config**: `config.toml` in the task repository root
+  * Repository-specific settings
+  * Hooks and automation
+  
+* **Task-level config**: Within individual task TOML files (future feature)
+  * Task-specific overrides
+
+See [Design Decisions](design-decisions.md) for details on the configuration hierarchy and resolution order.
 
 ---
 
 ## Interoperability Through Git
 
-Because the task repository is just a git-managed directory of plain-text files, any external tool that understands git can also interact with the task data. This enables:
+Because each data directory is a git-managed directory of plain-text files, any external tool that understands git can also interact with the task data. This enables:
 
 * Mobile or desktop apps that embed a git client (e.g., an Android app) to clone, edit, or sync tasks directly.
 * Third-party tools to parse or manipulate tasks without needing to integrate with a custom API or service.
 * Automation or scripting layers to consume tasks the same way they would consume files in any code repository.
+* Each data directory can have its own git remote(s), allowing independent sync targets.
 
-This design keeps task data maximally open, inspectable, and ecosystem-friendly—any tool that understands git and text files can participate.
+This design keeps task data maximally open, inspectable, and ecosystem-friendly—any tool that understands git and text files can participate. Multiple data directories can coexist, each with their own git configuration and remote repositories.
 
 ---
 
@@ -93,7 +136,7 @@ The system will consist of:
 * **CLI interface**: Command-line tool for user interaction
 * **Git integration**: Detection and interaction with git repositories
 * **Conflict handling**: Detection and resolution of merge conflicts
-* **Configuration management**: TOML-based configuration including hooks
+* **Configuration management**: Multi-tiered TOML-based configuration system (global, data directory, task-level)
 
 ### Hooks System Architecture
 

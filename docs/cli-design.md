@@ -34,6 +34,25 @@ The exact command name is still under consideration (see Open Design Questions).
 * `task delete` - Delete a task
 * `task sync` - Sync with git remotes (if configured)
 
+### Global Options
+
+All commands support global options:
+
+* `--data-dir <path>` or `-d <path>` - Specify the data directory (overrides configuration)
+* `--config <path>` - Specify path to global config file (overrides XDG default)
+* `--verbose` or `-v` - Increase verbosity
+* `--quiet` or `-q` - Reduce output
+* `--help` or `-h` - Show help
+
+The `--data-dir` option is essential for working with multiple repositories:
+
+* **Multiple repositories**: Users can have multiple data directories, each acting as an independent repository
+* **Different remotes**: Each data directory can connect to different remote repositories
+* **Override defaults**: Allows specifying a data directory without modifying configuration files
+* **Flexible workflows**: Enables separation of personal/work/experimental repositories
+
+**Note**: The data directory IS the repository. There is no separate repository concept—each data directory is a complete, self-contained task repository that can operate independently and sync to its own remote(s).
+
 ---
 
 ## Open Design Questions
