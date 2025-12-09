@@ -215,3 +215,49 @@ The configuration system is designed to be extensible. Future additions could in
 * **Version-controlled**: Data directory config can be committed to git, syncing settings across machines
 * **Extensible**: Architecture supports future configuration sources without breaking existing setups
 
+---
+
+## Perl Module Management: local::lib
+
+The project uses **`local::lib`** for managing Perl module dependencies. This approach keeps project dependencies isolated from the system Perl installation, avoiding conflicts and permission issues.
+
+### Rationale
+
+* **Isolation**: Project dependencies are installed in a local directory, separate from system Perl modules
+* **No root access required**: Modules can be installed without administrator privileges
+* **Reproducibility**: Each developer can have identical dependency environments
+* **Portability**: Works across different systems without modifying system-wide Perl installations
+* **Git-friendly**: The local library path can be configured per-project or per-user
+
+### Usage
+
+Developers set up `local::lib` in their development environment, and the project's Perl scripts will automatically use the local module library. This ensures consistent dependency versions across development environments.
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for setup instructions.
+
+---
+
+## Directory Structure and Naming Conventions
+
+The project follows conventions to keep the root directory clean and organized.
+
+### Dot-Named Files and Directories
+
+Files and directories that are not part of the core project structure should be **dot-named** (prefixed with a dot) to keep the root directory clean:
+
+* **`.local-lib/`** - local::lib directory for Perl module dependencies (project-specific)
+* **`.git/`** - Git repository metadata (standard)
+* **`.gitignore`** - Git ignore patterns (standard)
+* Other development artifacts should follow this pattern
+
+### Directory Purposes
+
+* **`bin/`** - Contains **tool scripts** (the actual application executables). These are the user-facing commands that will be installed or executed.
+* **`scripts/`** - Contains **development scripts** (e.g., `local-env.sh` for setting up local development environment). These are helper scripts for developers, not part of the application itself.
+
+### Rationale
+
+* **Clean root directory**: Dot-naming keeps non-core files hidden and organized
+* **Clear separation**: Distinguishing `bin/` (application) from `scripts/` (development) clarifies purpose
+* **Standard conventions**: Follows Unix conventions for hidden files and common directory naming
+

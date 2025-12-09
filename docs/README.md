@@ -187,4 +187,6 @@ For more detailed information, see the following documents in reading order:
 5. [Implementation Notes](implementation-notes.md) - Implementation language choice and technical details
 6. [Migration and Export](migration.md) - Migration tools and export formats
 7. [Development Milestones](milestones.md) - Project milestones and completion criteria
+8. [Development Guide](DEVELOPMENT.md) - Development environment setup and workflow
+9. [Contributing](CONTRIBUTING.md) - Contribution guidelines and process
 

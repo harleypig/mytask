@@ -51,6 +51,16 @@ The system should be:
 * **Easy to install**: Minimal dependencies, or packaged as a standalone executable
 * **Distributable**: Can be fatpacked or packaged with PAR::Packer for single-file distribution
 
+### Development Dependencies
+
+The project uses **`local::lib`** for managing Perl module dependencies during development. This ensures:
+
+* **Isolated dependencies**: Project modules don't interfere with system Perl
+* **No root access required**: Developers can install dependencies without administrator privileges
+* **Consistent environments**: All developers use the same dependency versions
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for setup instructions and [design-decisions.md](design-decisions.md) for rationale.
+
 ---
 
 ## Testing Strategy

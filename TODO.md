@@ -332,6 +332,9 @@ Each milestone should consider the following cross-cutting concerns:
 
 Future enhancements and features that are not part of the core milestones:
 
+* **Docker Image**: A docker image
 * **Curses-based TUI**: Terminal user interface using curses/ncurses for interactive task management
 * **Web-based UI**: Web interface for accessing and managing tasks through a browser
 * **Android app**: Native Android application for mobile task management
+
+* Consider using PAR::Packer as a release tool
