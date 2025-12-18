@@ -4,6 +4,12 @@ This document defines the TOML file format used for storing tasks in the
 mytask system. Each task is stored as a separate TOML file in the `tasks/`
 directory of a task repository.
 
+**Note**: The authoritative source of truth for the task file format is the
+JSON Schema definition in `docs/schema/task-file-schema.json`. This document
+provides human-readable documentation, but the schema file defines the exact
+validation rules and constraints. The Perl module `lib/MyTask/Schema.pm`
+provides programmatic access to the schema for validation.
+
 ## File Structure
 
 Task files are organized into three distinct sections:

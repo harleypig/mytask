@@ -106,6 +106,19 @@ should be automatically applied based on context:
 - Request: "create branch refactor-parser"
   → Ask: "Is this a feature, bugfix, or milestone branch?"
 
+### Code Formatting
+
+**Indentation**: Use 2-space indentation for all code files. Do not use tabs
+except where required by external tools (e.g., Makefiles).
+
+**Rationale**: Consistent indentation improves readability and reduces merge
+conflicts. Two spaces provide a good balance between visual indentation and
+line length.
+
+**Enforcement**: All Perl files, test files, configuration files, and
+documentation should use 2-space indentation. Tabs should only be used when
+required by external tools (such as Makefiles).
+
 ### Commit Messages
 
 Follow conventional commit format when applicable:

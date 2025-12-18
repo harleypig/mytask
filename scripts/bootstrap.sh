@@ -67,8 +67,27 @@ else
   perl -Mlocal::lib="$LOCAL_LIB_DIR" -e1
   
   # Capture the env exports into scripts/local-env.sh (overwrites each time)
+  # Use setup_env_hash to set environment, then capture the variables
   perl -Mlocal::lib="$LOCAL_LIB_DIR" \
-    -e 'print local::lib->environment_vars' \
+    -e 'local::lib->setup_env_hash("'"$LOCAL_LIB_DIR"'"); 
+        print "export PERL_LOCAL_LIB_ROOT=\"$ENV{PERL_LOCAL_LIB_ROOT}\"\n" if $ENV{PERL_LOCAL_LIB_ROOT};
+        if ($ENV{PERL_MB_OPT}) {
+          my $opt = $ENV{PERL_MB_OPT};
+          $opt =~ s/"/\\"/g;
+          print "export PERL_MB_OPT=\"$opt\"\n";
+        }
+        if ($ENV{PERL_MM_OPT}) {
+          my $opt = $ENV{PERL_MM_OPT};
+          $opt =~ s/"/\\"/g;
+          print "export PERL_MM_OPT=\"$opt\"\n";
+        }
+        print "export PERL5LIB=\"$ENV{PERL5LIB}\"\n" if $ENV{PERL5LIB};
+        my $path = $ENV{PATH};
+        if ($path && index($path, "'"$LOCAL_LIB_DIR"'/bin") == -1) {
+          print "export PATH=\"'"$LOCAL_LIB_DIR"'/bin:$path\"\n";
+        } elsif ($path) {
+          print "export PATH=\"$path\"\n";
+        }' \
     > "$PROJECT_ROOT/scripts/local-env.sh"
   
   # Load the env for this script's execution (so cpanm installs into local-lib)

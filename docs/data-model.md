@@ -2,6 +2,11 @@
 
 This document describes the task data structure, fields, and relationships.
 
+**Note**: The authoritative source of truth for the task file format is the
+JSON Schema definition in `docs/schema/task-file-schema.json`. This document
+provides high-level descriptions, but the schema file defines the exact
+validation rules and constraints.
+
 ## Task Semantics
 
 Tasks are organized into three sections (see [Task File Format](task-file-format.md)

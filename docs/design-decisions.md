@@ -91,6 +91,10 @@ TOML provides a good balance between human readability and structured data,
 making it ideal for tasks that need to be both machine-parseable and manually
 editable.
 
+**Schema**: The authoritative source of truth for the task file format is the
+JSON Schema definition in `docs/schema/task-file-schema.json`. The Perl module
+`lib/MyTask/Schema.pm` provides programmatic validation against this schema.
+
 See [Task File Format](task-file-format.md) for complete format specification.
 
 ---
