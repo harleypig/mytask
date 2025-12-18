@@ -1,0 +1,13 @@
+name: Self review gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  gate:
+    name: Self review gate
+    runs-on: ubuntu-latest
+    environment: self-review
+    steps:
+      - run: echo "Manually approve this check to confirm you've reviewed the PR."
