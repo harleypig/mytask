@@ -1,6 +1,6 @@
 # AI Agents and Automation
 
-**Version:** v1.1.0
+**Version:** v1.1.1
 
 This `AGENTS.md` document defines the standard behaviors, configuration
 modules, and responsibilities for AI agents across repositories. It is
