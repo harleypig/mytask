@@ -32,7 +32,7 @@ plans.
 
 **Decision**: UUIDs (v4) for primary IDs, with optional short aliases stored as metadata for quick reference.
 
-**Implementation**: 
+**Implementation**:
 - Task files named `<uuid>.toml` (e.g., `550e8400-e29b-41d4-a716-446655440000.toml`)
 - Optional `alias` field for human-friendly short identifiers
 - Documented in [docs/data-model.md](docs/data-model.md) and [docs/task-file-format.md](docs/task-file-format.md)
@@ -51,7 +51,7 @@ All examples are valid, parseable TOML. Complete format specification documented
 
 ### Directory Structure ✅ RESOLVED
 
-**Decision**: 
+**Decision**:
 - Tasks live in `tasks/` directory
 - Config lives in `config.toml` in repository root
 - Repository structure documented in [docs/architecture.md](docs/architecture.md)

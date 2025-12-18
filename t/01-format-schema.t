@@ -168,4 +168,3 @@ subtest "Special characters in fields" => sub {
 };
 
 done_testing;
-

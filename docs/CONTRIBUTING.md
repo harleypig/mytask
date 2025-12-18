@@ -109,4 +109,3 @@ If you have questions about:
 ---
 
 **Note**: This is a living document. Update it as contribution processes evolve.
-

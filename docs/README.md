@@ -191,4 +191,3 @@ For more detailed information, see the following documents in reading order:
 7. [Development Milestones](milestones.md) - Project milestones and completion criteria
 8. [Development Guide](DEVELOPMENT.md) - Development environment setup and workflow
 9. [Contributing](CONTRIBUTING.md) - Contribution guidelines and process
-

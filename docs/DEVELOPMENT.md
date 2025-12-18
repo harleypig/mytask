@@ -50,7 +50,7 @@ This setup uses `local::lib` to create a project-specific Perl module directory 
 2. Install `local::lib` if not already available:
    ```bash
    cpanm --local-lib=~/perl5 local::lib
-   
+
    # Or install via cpan
    cpan local::lib
    ```
@@ -126,7 +126,7 @@ This setup uses `perlbrew` to manage Perl versions and modules. Perlbrew provide
    sudo apt-get install perlbrew    # Debian/Ubuntu
    brew install perlbrew             # macOS
    # Or use your distribution's package manager
-   
+
    # Or install via cpanm
    cpanm App::perlbrew
    ```
@@ -278,7 +278,7 @@ To keep the root directory clean, files and directories that are not part of the
    source scripts/local-env.sh
    ```
    **Important**: You must source `scripts/local-env.sh` each time you work on this project (see [Working on the Project](#working-on-the-project)).
-   
+
    **Note**: For perlbrew users, if perlbrew is already initialized in your shell, you may not need to source this script. However, sourcing it ensures consistency.
 
 4. Review documentation:
@@ -397,4 +397,3 @@ As milestones are completed, this document will be updated to include:
 ---
 
 **Note**: This is a living document. Update it as the development environment evolves and new tools or processes are established.
-

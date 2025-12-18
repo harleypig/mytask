@@ -53,7 +53,7 @@ BEGIN {
 subtest "Basic task parsing" => sub {
     my $task_file = path('docs/examples/simple-task.toml');
     ok($task_file->exists, "Example file exists");
-    
+
     # Parse and validate
     my $task = parse_task_file($task_file);
     is($task->{task}{description}, "Review pull request #123", "Description matches");
@@ -199,4 +199,3 @@ Tests should be run:
 - Performance testing for large task repositories
 - Multi-host scenario simulation
 - Mock git repositories for sync testing
-

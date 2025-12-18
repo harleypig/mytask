@@ -75,6 +75,9 @@ is committed or pushed.
   * This installs hooks using `.pre-commit-config.yaml` (checks only).
 * Default to checks: run `pre-commit run --all-files`.
   * Uses `.pre-commit-config.yaml` by default (checks only, non-modifying).
+* When preparing to commit and a fix config exists, run the fix config first:
+    `pre-commit run --all-files --config .pre-commit-config-fix.yaml`
+  to apply auto-fixes and re-run all checks before committing.
 * When an auto‑fix is appropriate and safe, ask the user, then run:
     `pre-commit run --all-files --config .pre-commit-config-fix.yaml`.
   * This runs all checks AND applies auto-fixes in one pass.

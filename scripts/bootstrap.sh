@@ -19,7 +19,7 @@ if [ "$PERLBREW_DETECTED" = true ]; then
   # Perlbrew setup
   echo "Detected perlbrew environment."
   echo "Using perlbrew-managed Perl: $(perl -v | head -2 | tail -1)"
-  
+
   # Generate perlbrew-aware environment script
   cat > "$PROJECT_ROOT/scripts/local-env.sh" << 'ENVEOF'
 #!/usr/bin/env bash
@@ -44,28 +44,28 @@ if command -v perlbrew >/dev/null 2>&1; then
   fi
 fi
 ENVEOF
-  
+
   # Check for cpanm (perlbrew users should install it via perlbrew)
   if ! command -v cpanm >/dev/null 2>&1; then
     echo "Error: cpanm not found."
     echo "Please install cpanm using: perlbrew install-cpanm"
     exit 1
   fi
-  
+
   # Source the environment for this script
   # shellcheck disable=SC1090
   source "$PROJECT_ROOT/scripts/local-env.sh"
-  
+
 else
   # Standard local::lib setup
   LOCAL_LIB_DIR="$PROJECT_ROOT/.local-lib"
-  
+
   echo "Using standard local::lib setup."
   echo "Using local::lib at: $LOCAL_LIB_DIR"
-  
+
   # Ensure local::lib exists and generate env snippet
   perl -Mlocal::lib="$LOCAL_LIB_DIR" -e1
-  
+
   # Capture the env exports into scripts/local-env.sh (overwrites each time)
   # Use setup_env_hash to set environment, then capture the variables
   # Define PROJECT_ROOT at the top so PATH can use it as a variable reference
@@ -78,7 +78,7 @@ else
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 ENVEOF
-  
+
   # Append Perl environment variables
   perl -Mlocal::lib="$LOCAL_LIB_DIR" -e '
     local::lib->setup_env_hash("'"$LOCAL_LIB_DIR"'");
@@ -94,7 +94,7 @@ ENVEOF
       }
     }
   ' >> "$PROJECT_ROOT/scripts/local-env.sh"
-  
+
   # Append PATH export using variable reference instead of hardcoded path
   # This ensures the script works even if the project is moved
   cat >> "$PROJECT_ROOT/scripts/local-env.sh" << 'PATHEOF'
@@ -105,12 +105,12 @@ elif [ -z "$PATH" ]; then
   export PATH="$PROJECT_ROOT/.local-lib/bin"
 fi
 PATHEOF
-  
+
   # Load the env for this script's execution (so cpanm installs into local-lib)
   # Note: This does NOT affect your shell - you must source scripts/local-env.sh manually
   # shellcheck disable=SC1090
   source "$PROJECT_ROOT/scripts/local-env.sh"
-  
+
   # Check for cpanm (users should install it via their system package manager or preferred method)
   if ! command -v cpanm >/dev/null 2>&1; then
     echo "Error: cpanm not found."

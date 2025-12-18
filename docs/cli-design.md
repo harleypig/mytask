@@ -223,4 +223,3 @@ The CLI executes hooks automatically during task operations:
 * Post-operation hooks can trigger notifications, logging, or other side effects
 * Hook execution is transparent to users but can be monitored via verbose/debug flags
 * Failed hooks can optionally abort operations or just log warnings
-

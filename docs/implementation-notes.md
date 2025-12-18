@@ -72,4 +72,3 @@ The implementation should be:
 * **Testable**: Data model and operations are easy to test
 * **Resilient**: "Corrupt the data and see what happens" is feasible and understandable
 * **Well-tested**: Comprehensive test suite covering edge cases and multi-host scenarios
-

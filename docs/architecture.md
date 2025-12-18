@@ -85,11 +85,11 @@ The system uses multiple configuration files:
 * **Global config**: `$XDG_CONFIG_HOME/mytask/config.toml` (typically `~/.config/mytask/config.toml`)
   * User-wide defaults and preferences
   * Default data directory location
-  
+
 * **Data directory config**: `config.toml` in the task repository root
   * Repository-specific settings
   * Hooks and automation
-  
+
 * **Task-level config**: Within individual task TOML files (future feature)
   * Task-specific overrides
 
@@ -179,4 +179,3 @@ The engine integrates with:
 * **Core logic**: Triggers task creation and updates
 * **Hooks system**: Can trigger hooks when generating or auto-completing tasks
 * **CLI**: Provides commands for managing recurring tasks and checking auto-completion status
-

@@ -21,6 +21,8 @@ repos:
         description: Detects merge conflict markers
       - id: check-case-conflict
         description: Detects case conflicts in filenames
+      - id: mixed-line-ending
+        description: Checks for mixed line endings
       - id: check-executables-have-shebangs
         description: Ensures executable files have shebangs
       - id: check-shebang-scripts-are-executable

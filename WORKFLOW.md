@@ -153,6 +153,13 @@ line length.
 documentation should use 2-space indentation. Tabs should only be used when
 required by external tools (such as Makefiles).
 
+### Pre-commit Usage
+
+- If pre-commit is installed and a fix config (`.pre-commit-config-fix.yaml`) exists, run it before committing:
+  `pre-commit run --all-files --config .pre-commit-config-fix.yaml` (applies auto-fixes and reruns checks).
+- The default config (`.pre-commit-config.yaml`) is checks-only and is used by git hooks and CI/GitHub Actions.
+- CI SHOULD run `pre-commit run --all-files` (checks-only) and fail on violations.
+
 ### Commit Messages
 
 Follow conventional commit format when applicable:
@@ -182,4 +189,3 @@ Follow conventional commit format when applicable:
 - Integration tests should verify milestone functionality works with
   previous milestones
 - Test coverage should be documented
-

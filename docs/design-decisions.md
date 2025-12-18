@@ -332,4 +332,3 @@ Files and directories that are not part of the core project structure should be 
 * **Clean root directory**: Dot-naming keeps non-core files hidden and organized
 * **Clear separation**: Distinguishing `bin/` (application) from `scripts/` (development) clarifies purpose
 * **Standard conventions**: Follows Unix conventions for hidden files and common directory naming
-

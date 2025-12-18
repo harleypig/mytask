@@ -205,4 +205,3 @@ Tasks are stored as TOML files. See [design-decisions.md](design-decisions.md) f
 
 For complete details on the task file format, including field definitions,
 validation rules, and examples, see [task-file-format.md](task-file-format.md).
-

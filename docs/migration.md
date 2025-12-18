@@ -121,4 +121,3 @@ task import --format ics < task.ics
 * **Import**: Core feature, straight format → TOML conversion (no data manipulation)
 * **Data manipulation**: Handled by external tools before import
 * **Rationale**: TOML format makes it easy for users to write their own tools
-

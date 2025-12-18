@@ -22,14 +22,14 @@ sub _load_schema {
 
   my $schema_file = path(__FILE__)->parent->parent->parent
     ->child('docs')->child('schema')->child('task-file-schema.json');
-  
+
   unless ($schema_file->exists) {
     die "Schema file not found: $schema_file";
   }
 
   $validator = JSON::Schema::Modern->new;
   $schema_data = decode_json($schema_file->slurp);
-  
+
   return ($validator, $schema_data);
 }
 
@@ -48,15 +48,15 @@ sub validate_task_file {
   return (0, "Data must be a hash reference") unless ref($data) eq 'HASH';
 
   my ($v, $schema) = _load_schema();
-  
+
   # Validate against JSON Schema
   my $result = $v->evaluate($data, $schema);
-  
+
   unless ($result->valid) {
     # Format error messages
     # JSON::Schema::Modern returns error objects with ->error and ->instance_location methods
     my @errors = $result->errors;
-    my $error_msg = join('; ', map { 
+    my $error_msg = join('; ', map {
       my $msg = eval { $_->error } || '';
       my $path = eval { $_->instance_location } || '';
       $path ? "$path: $msg" : ($msg || 'validation error');
@@ -75,4 +75,3 @@ sub validate_task_file {
 }
 
 1;
-
