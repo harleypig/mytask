@@ -3,11 +3,14 @@
 
 # Runtime dependencies
 requires 'TOML::Tiny', '0';
+requires 'JSON::Schema::Modern', '0';
+requires 'JSON::MaybeXS', '1.004000';
+requires 'Path::Tiny', '0';
 
 # Test dependencies
 on test => sub {
-  requires 'Path::Tiny', '0';
   # Test::More is part of Perl core, so no need to declare it
+  # Path::Tiny is now a runtime dependency (used by Schema.pm)
 };
 
 # Note: Additional dependencies will be added as milestones progress
