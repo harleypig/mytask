@@ -113,7 +113,7 @@ I want to formalize this idea into a coherent tool and data model.
    * Optional:
 
      * Parents / dependents (task graph)
-     * Notes / freeform body text
+     * Notes (timestamped journal entries in `[[notes]]` array)
 
 5. **Reasonable CLI UX**
 

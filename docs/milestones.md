@@ -31,7 +31,7 @@ Milestones should be completed in order, as later milestones may depend on earli
   * Due date / scheduled date
 * Create example task files for basic scenarios:
   * Simple task (basic fields only)
-  * Task with notes/body text
+  * Task with timestamped journal entries (notes)
   * Task with due date
   * Completed task
   * Deleted task

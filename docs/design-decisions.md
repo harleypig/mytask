@@ -77,14 +77,21 @@ recovery.
 
 ## File Format
 
-Tasks will be stored as **TOML** files with the following structure:
+Tasks are stored as **TOML** files organized into three sections:
 
-* TOML frontmatter for structured metadata (ID, status, dates, tags, etc.)
-* Optional freeform body text for notes/description
-* Human-readable and merge-friendly
-* Easy to parse with standard tools (`toml-cli`, `jq` with TOML support, etc.)
+* **`[task]`** - User-modifiable fields (description, status, dates, tags, etc.)
+* **`[meta]`** - Program-managed fields (ID, timestamps, etc.)
+* **`[[notes]]`** - Timestamped journal entries (user notes and app logs)
 
-TOML provides a good balance between human readability and structured data, making it ideal for tasks that need to be both machine-parseable and manually editable.
+This structure is human-readable and merge-friendly, making it easy to parse with
+standard tools (`toml-cli`, `jq` with TOML support, etc.) while clearly
+separating user-modifiable content from program-managed metadata.
+
+TOML provides a good balance between human readability and structured data,
+making it ideal for tasks that need to be both machine-parseable and manually
+editable.
+
+See [Task File Format](task-file-format.md) for complete format specification.
 
 ---
 

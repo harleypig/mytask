@@ -154,8 +154,8 @@ optional short aliases stored as metadata for quick reference.
 
 **Implementation**:
 - Task files are named `<uuid>.toml` (e.g., `550e8400-e29b-41d4-a716-446655440000.toml`)
-- The `id` field in the TOML file contains the UUID as a string
-- The optional `alias` field can contain a short identifier (e.g., `"t1"` or `"review-pr"`)
+- The `id` field in the `[meta]` section contains the UUID as a string
+- The optional `alias` field in the `[task]` section can contain a short identifier (e.g., `"t1"` or `"review-pr"`)
 - Aliases are recommended to be unique but not enforced by the format
 
 See [task-file-format.md](task-file-format.md) for complete format
