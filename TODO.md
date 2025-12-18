@@ -24,9 +24,9 @@ documentation of the forgiveness principle and [Future: Invalid Filename and
 Format Recovery](#invalid-filename-and-format-recovery) for implementation
 plans.
 
-## Milestone 1: Task File Format (Basic) ⏳ PENDING APPROVAL
+## Milestone 1: Task File Format (Basic) ✅ APPROVED
 
-**Status**: All components complete. Awaiting maintainer approval per [WORKFLOW.md](WORKFLOW.md).
+**Status**: Approved and completed. All requirements met per [docs/milestones.md](docs/milestones.md).
 
 ### ID Strategy ✅ RESOLVED
 
