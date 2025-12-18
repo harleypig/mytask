@@ -26,7 +26,7 @@ Milestones should be completed in order, as later milestones may depend on earli
 * Document core fields and their purposes:
   * ID (unique identifier)
   * Description
-  * Status (pending, done, deleted)
+  * Status (pending, done, deleted, archived)
   * Created/modified timestamps
   * Due date / scheduled date
 * Create example task files for basic scenarios:

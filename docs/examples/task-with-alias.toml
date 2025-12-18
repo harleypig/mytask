@@ -1,0 +1,16 @@
+# Task with Alias Example
+#
+# This example demonstrates a task with an optional alias field. The
+# alias provides a short, human-friendly identifier that can be used
+# instead of the full UUID for command-line operations.
+
+[task]
+description = "Review pull request #123 for authentication changes"
+status = "pending"
+due = "2024-01-18"
+alias = "review-pr-123"
+
+[meta]
+id = "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+created = "2024-01-15T10:30:00Z"
+modified = "2024-01-15T10:30:00Z"

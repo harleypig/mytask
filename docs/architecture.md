@@ -52,13 +52,15 @@ A task repository (data directory) has the following structure:
 ```
 data-directory/         # This IS the repository
 ├── tasks/              # Directory containing task files (TOML)
-│   ├── <task-id>.toml
+│   ├── <uuid>.toml    # Task files named by UUID (e.g., 550e8400-e29b-41d4-a716-446655440000.toml)
 │   └── ...
 ├── config.toml         # Repository configuration (hooks, settings)
 └── .git/               # Git repository (if using git for sync)
 ```
 
 **Important**: The data directory itself is the repository. There is no separate "repository" concept—the data directory contains everything needed to function as a complete task repository.
+
+**Task File Naming**: Task files are stored in the `tasks/` directory and named using their UUID identifier in the format `<uuid>.toml`. For example, a task with ID `550e8400-e29b-41d4-a716-446655440000` would be stored as `tasks/550e8400-e29b-41d4-a716-446655440000.toml`.
 
 The `config.toml` file in the data directory root contains:
 * Hook definitions (see [Design Decisions](design-decisions.md))
@@ -67,6 +69,14 @@ The `config.toml` file in the data directory root contains:
 * Optional metadata
 
 This structure keeps configuration version-controlled alongside tasks, ensuring hooks and settings sync across machines when the repository is cloned or synced.
+
+**Git Ignore Patterns**: If using git for synchronization, the repository should include a `.gitignore` file. Recommended patterns:
+* Cache or index files (if any are created in future milestones)
+* Temporary files
+* Editor backup files (e.g., `*.swp`, `*~`)
+* OS-specific files (e.g., `.DS_Store`, `Thumbs.db`)
+
+All task files (`tasks/*.toml`) and the `config.toml` file should be committed to git.
 
 ### Configuration File Locations
 

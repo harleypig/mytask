@@ -1,0 +1,13 @@
+# Simple Task Example
+#
+# This example demonstrates a basic task with only the required fields.
+# This is the minimal valid task file format.
+
+[task]
+description = "Review pull request #123"
+status = "pending"
+
+[meta]
+id = "550e8400-e29b-41d4-a716-446655440000"
+created = "2024-01-15T10:30:00Z"
+modified = "2024-01-15T10:30:00Z"

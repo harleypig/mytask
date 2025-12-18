@@ -4,17 +4,33 @@ This document describes the task data structure, fields, and relationships.
 
 ## Task Semantics
 
+Tasks are organized into three sections (see [Task File Format](task-file-format.md)
+for complete format specification):
+
+1. **`[task]`** - User-modifiable fields (description, status, dates, etc.)
+2. **`[meta]`** - Program-managed fields (ID, timestamps, etc.)
+3. **`[[notes]]`** - Timestamped journal entries (user notes and app logs)
+
 ### Basic Fields
 
 Every task includes these core fields:
 
-* **ID**: Unique identifier for the task
-* **Description**: Short description of the task
-* **Status**: Current state (pending, done, deleted, etc.)
-* **Created/modified timestamps**: When the task was created and last modified
-* **Due date / scheduled date**: Optional date fields for scheduling
-* **Tags**: Array of tags for categorization
-* **Project/context**: Optional project or context grouping
+**In `[task]` section (user-modifiable):**
+* **Description**: Short description of the task (required)
+* **Status**: Current state (pending, done, deleted, archived) (required)
+* **Due date / scheduled date**: Optional date fields for scheduling (ISO 8601)
+* **Alias**: Optional short, human-friendly identifier
+* **Tags**: Array of tags for categorization (future milestone)
+* **Project/context**: Optional project or context grouping (future milestone)
+
+**In `[meta]` section (program-managed):**
+* **ID**: Unique identifier for the task (UUID v4) (required)
+* **Created/modified timestamps**: When the task was created and last modified (ISO 8601) (required)
+
+**In `[[notes]]` section (timestamped journal):**
+* **Notes**: Array of timestamped journal entries containing user notes and
+  app-generated logs. Each entry has a timestamp and entry text, with optional
+  type field to distinguish user notes from app logs.
 
 Tasks may also include recurrence-related fields:
 
@@ -29,9 +45,14 @@ Tasks may also include recurrence-related fields:
 
 Tasks may also include:
 
-* **Parents / dependents**: Task graph relationships (see below)
-* **Notes / freeform body text**: Additional details beyond the description
-* **Recurrence pattern**: Configuration for repeating tasks (see below)
+* **Parents / dependents**: Task graph relationships (see below) (future milestone)
+* **Recurrence pattern**: Configuration for repeating tasks (see below) (future milestone)
+
+**Notes**: The `[[notes]]` section provides timestamped journal entries for
+documenting task progress, adding context, and maintaining an audit trail of
+app-generated actions. Users can add entries manually, and the application
+can add log entries to track status changes, field updates, and other
+operations.
 
 ---
 
@@ -117,12 +138,30 @@ The exact depth and complexity of these relationships is still under considerati
 
 ---
 
+## ID Strategy
+
+**Decision**: UUIDs (v4) are used as the primary identifier for tasks, with
+optional short aliases stored as metadata for quick reference.
+
+**Rationale**:
+- UUIDs are collision-resistant across machines, making them ideal for
+  multi-host synchronization
+- No coordination required between machines when creating tasks
+- Optional `alias` field provides human-friendly short identifiers for
+  command-line operations
+- UUIDs ensure uniqueness even when tasks are created concurrently on
+  different machines
+
+**Implementation**:
+- Task files are named `<uuid>.toml` (e.g., `550e8400-e29b-41d4-a716-446655440000.toml`)
+- The `id` field in the TOML file contains the UUID as a string
+- The optional `alias` field can contain a short identifier (e.g., `"t1"` or `"review-pr"`)
+- Aliases are recommended to be unique but not enforced by the format
+
+See [task-file-format.md](task-file-format.md) for complete format
+specification.
+
 ## Open Design Questions
-
-### ID Strategy
-
-* Human-friendly incremental IDs vs. UUIDs vs. hash (e.g., based on content)?
-* How to avoid collisions when multiple machines create tasks concurrently?
 
 ### Task Graph / Dependencies
 
@@ -158,4 +197,7 @@ The exact depth and complexity of these relationships is still under considerati
 ## File Format Details
 
 Tasks are stored as TOML files. See [design-decisions.md](design-decisions.md) for more information on the TOML format choice.
+
+For complete details on the task file format, including field definitions,
+validation rules, and examples, see [task-file-format.md](task-file-format.md).
 

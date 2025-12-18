@@ -16,13 +16,115 @@ The CLI should provide:
 
 * **Composability**: Commands should work well with pipes, filters, and other Unix tools.
 
+* **Forgiveness**: The CLI should be as forgiving as possible while maintaining
+  usability. See [Design Decisions](design-decisions.md) for the forgiveness
+  principle.
+
 ---
 
 ## Command Structure
 
-(To be designed - placeholder for future CLI specification)
+### Command Syntax
 
-The exact command name is still under consideration (see Open Design Questions).
+The basic command structure is:
+
+```
+mytask <command> [options] "description"
+```
+
+**Order Requirements** (strict):
+- `<command>` must come first (e.g., `add`, `list`, `done`)
+- `[options]` come after the command
+- `"description"` (or other positional arguments) come last
+
+**Forgiveness Within Sections**:
+- Within `[options]`, order doesn't matter: `mytask add --due 2024-01-20 --tag work` is equivalent to `mytask add --tag work --due 2024-01-20`
+- **Option name format is forgiving**: Only the option name matters, not the format. All of these are equivalent:
+  - `--tag`, `-tag`, `tag:`, `tag=`
+  - `--due`, `-due`, `due:`, `due=`
+  - This accommodates different user expectations, preferences, typos, and similar issues
+- Description parsing is forgiving: handles quotes, unquoted strings, special characters
+- Date formats are parsed leniently: accepts various ISO 8601 formats, relative dates, etc.
+- **Multiple values**: Options that accept multiple values can be specified in two ways:
+  - Comma-separated list: `tag:tag1,tag2` or `tag=tag1,tag2`
+  - Repeated options: `tag: tag1 tag: tag2` or `--tag tag1 --tag tag2`
+  - Separator character may be configurable via configuration setting (future enhancement)
+
+### Description Parsing (for `mytask add`)
+
+For the `mytask add` command, the description parsing follows these rules:
+
+- **First unrecognized option keyword**: The first token that doesn't match any
+  recognized option keyword (regardless of format) indicates the start of the
+  description. Everything from that point forward becomes part of the description.
+
+- **Description can be unquoted**: The description doesn't require quotes,
+  making it easy to add tasks quickly.
+
+- **Quoting option values**: When option values contain spaces or could be
+  mistaken for option keywords, quote the value to prevent it from being
+  interpreted as the start of the description.
+
+**Examples**:
+```bash
+# Simple case - description starts after recognized options
+mytask add -due tomorrow "do the thing"
+# Description: "do the thing"
+
+# Unquoted value causes early description start
+mytask add -due tomorrow noon -tag test do the thing
+# Parsed as: -due="tomorrow", description="noon -tag test do the thing"
+# Note: "noon" doesn't match any option, so description starts there
+
+# Quoting the value fixes it
+mytask add -due "tomorrow noon" -tag test do the thing
+# Parsed as: -due="tomorrow noon", -tag="test", description="do the thing"
+
+# Description can be unquoted if no ambiguity
+mytask add -due tomorrow do-the-thing
+# Description: "do-the-thing"
+
+# Quoted description works too
+mytask add -due tomorrow "do the thing"
+# Description: "do the thing"
+```
+
+This forgiving parsing allows users to write commands naturally while
+accommodating cases where option values might be mistaken for the description
+start.
+
+**Examples**:
+```bash
+# Correct order
+mytask add --due 2024-01-20 "Review pull request"
+
+# Options can be in any order
+mytask add --tag work --due 2024-01-20 "Review pull request"
+mytask add --due 2024-01-20 --tag work "Review pull request"
+
+# Option format is forgiving - all equivalent:
+mytask add --tag work "Review pull request"
+mytask add -tag work "Review pull request"
+mytask add tag:work "Review pull request"
+mytask add tag=work "Review pull request"
+
+# Multiple values - comma-separated
+mytask add tag:work,urgent "Review pull request"
+mytask add tag=work,urgent "Review pull request"
+
+# Multiple values - repeated options
+mytask add tag: work tag: urgent "Review pull request"
+mytask add --tag work --tag urgent "Review pull request"
+
+# Description can be quoted or unquoted (if no spaces)
+mytask add "Review pull request"
+mytask add review-pr
+
+# But command must come first
+mytask "Review pull request" add  # ERROR - wrong order
+```
+
+The exact command name is `mytask` (matches the project name).
 
 ### Proposed Commands
 

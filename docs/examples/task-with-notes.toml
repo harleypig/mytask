@@ -1,0 +1,33 @@
+# Task with Notes Example
+#
+# This example demonstrates a task with timestamped journal entries.
+# Notes can include both user-created entries and app-generated logs.
+
+[task]
+description = "Write blog post about task management"
+status = "pending"
+
+[meta]
+id = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+created = "2024-01-15T09:00:00Z"
+modified = "2024-01-15T09:00:00Z"
+
+[[notes]]
+timestamp = "2024-01-15T09:00:00Z"
+entry = '''
+Here are some notes about this task:
+
+- Research existing task management tools
+- Focus on file-based approaches
+- Include examples of TOML format
+- Target audience: developers who prefer plain-text workflows
+
+Additional context:
+This blog post should be around 1500 words and include code examples
+demonstrating the task file format.
+'''
+
+[[notes]]
+timestamp = "2024-01-15T10:30:00Z"
+type = "log"
+entry = "Task created via CLI command"

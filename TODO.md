@@ -2,47 +2,61 @@
 
 This file contains open questions and tasks organized by milestone. Items that don't fit into specific milestones are in the Future section.
 
-## Milestone 1: Task File Format (Basic)
+## General Principles
 
-### ID Strategy
+### Forgiveness Principle
 
-**Question**: What ID strategy should we use?
+**Core Philosophy**: The application must be **as forgiving as possible** while
+maintaining data integrity and usability. This principle applies across all
+aspects of the system:
 
-**Options**:
-- Human-friendly incremental IDs (e.g., `t1`, `t2`, `t3`)
-- UUIDs (e.g., `550e8400-e29b-41d4-a716-446655440000`)
-- Content-based hash (e.g., SHA-256 of task content)
+- **File Format**: Handle invalid filenames, incomplete TOML, and malformed
+  files gracefully
+- **CLI Interface**: Parse user input leniently, accepting various formats
+  while maintaining clear structure
+- **Data Validation**: Automatically fix issues where possible, preserve user
+  intent when recovering from errors
+- **Manual Edits**: Support users who manually edit task files, even if they
+  break conventions
 
-**Considerations**:
-- UUIDs are collision-resistant across machines but less human-friendly
-- Incremental IDs are human-friendly but require coordination to avoid collisions
-- Content-based hashes ensure uniqueness but change when task content changes
+See [docs/design-decisions.md](docs/design-decisions.md) for detailed
+documentation of the forgiveness principle and [Future: Invalid Filename and
+Format Recovery](#invalid-filename-and-format-recovery) for implementation
+plans.
 
-**Recommendation**: UUIDs for primary IDs, with optional short aliases stored as metadata for quick reference.
+## Milestone 1: Task File Format (Basic) ⏳ PENDING APPROVAL
 
-### Example Task File Format
+**Status**: All components complete. Awaiting maintainer approval per [WORKFLOW.md](WORKFLOW.md).
 
-**Question**: What should a concrete task file look like?
+### ID Strategy ✅ RESOLVED
 
-**Considerations**:
-- Should show TOML structure
-- Should demonstrate all fields
-- Should be readable and editable by humans
-- Should handle edge cases (long descriptions, special characters, etc.)
+**Decision**: UUIDs (v4) for primary IDs, with optional short aliases stored as metadata for quick reference.
 
-**Action**: Create example task files to validate the format.
+**Implementation**: 
+- Task files named `<uuid>.toml` (e.g., `550e8400-e29b-41d4-a716-446655440000.toml`)
+- Optional `alias` field for human-friendly short identifiers
+- Documented in [docs/data-model.md](docs/data-model.md) and [docs/task-file-format.md](docs/task-file-format.md)
 
-### Directory Structure
+### Example Task File Format ✅ RESOLVED
 
-**Question**: What should a task repository directory structure look like?
+**Implementation**: Example task files created in `docs/examples/`:
+- `simple-task.toml` - Basic task with minimal fields
+- `task-with-notes.toml` - Task with notes field (multiline string)
+- `task-with-due-date.toml` - Task with due date
+- `completed-task.toml` - Completed task
+- `deleted-task.toml` - Deleted task
+- `task-with-alias.toml` - Task with alias field
 
-**Considerations**:
-- Where do tasks live? (`tasks/` directory?)
-- Where does config live? (`.mytask/` or root?)
-- Where do indices/cache live? (if needed)
-- What files should be gitignored?
+All examples are valid, parseable TOML. Complete format specification documented in [docs/task-file-format.md](docs/task-file-format.md).
 
-**Action**: Define the repository structure specification.
+### Directory Structure ✅ RESOLVED
+
+**Decision**: 
+- Tasks live in `tasks/` directory
+- Config lives in `config.toml` in repository root
+- Repository structure documented in [docs/architecture.md](docs/architecture.md)
+
+**Implementation**: Repository structure specification complete with task file naming conventions and git ignore recommendations.
 
 ---
 
@@ -338,3 +352,165 @@ Future enhancements and features that are not part of the core milestones:
 * **Android app**: Native Android application for mobile task management
 
 * Consider using PAR::Packer as a release tool
+
+### Timestamp Format and Reliability
+
+**Problem**: ISO 8601 timestamps can be confusing and unreliable, especially
+when tasks are edited manually or created outside the tool. Timezone handling,
+format variations, and manual edits can lead to inconsistent or incorrect
+timestamps.
+
+**Proposal**: Consider using Unix epoch timestamps (seconds since 1970-01-01)
+as a more reliable format:
+- Unambiguous (no timezone confusion)
+- Easy to compare and sort
+- Simple numeric format
+- Widely supported
+
+**Challenges**:
+- Need to handle edits/additions made outside the tool (manual file edits)
+- Users may manually edit timestamps incorrectly
+- Need to detect and fix invalid or inconsistent timestamps
+- Migration from ISO 8601 format if we change
+- Human readability trade-off (epochs are less readable than ISO 8601)
+
+**Considerations**:
+- Should we use epochs for internal storage but display as ISO 8601?
+- How to validate and fix timestamps when files are edited manually?
+- Should we support both formats during a transition period?
+- How to handle timezone information if we switch to epochs?
+- Should `created` timestamp be immutable (never change, even on manual edit)?
+- How to detect and prevent timestamp manipulation that breaks causality
+  (e.g., `modified` before `created`)?
+
+**Status**: Design consideration for future evaluation. Current format uses ISO
+8601 timestamps as specified in [docs/task-file-format.md](docs/task-file-format.md).
+
+### Notes Entry Sorting and Timestamp Handling
+
+**Requirement**: Notes entries in the `[[notes]]` array must be maintained in
+chronological order by timestamp. The application should:
+
+- Sort notes entries by timestamp when reading task files
+- Handle cases where entries are manually added out of order
+- Ensure proper chronological ordering after manual edits
+- Preserve user intent when assigning timestamps to entries without them
+
+**Implementation Considerations**:
+- When should sorting occur? (on read, on write, or both?)
+- How to handle entries with identical timestamps?
+- Should sorting be automatic or require explicit command?
+- Performance implications for large notes arrays
+
+**Status**: Future enhancement. See [Design Decisions](docs/design-decisions.md)
+for forgiving timestamp handling details.
+
+### Invalid Filename and Format Recovery
+
+**Problem**: The application should be forgiving and handle cases where users
+create task files with invalid filenames or incomplete/invalid formats. For
+example:
+- Invalid filename: `quickie-manual-file.toml` (not a UUID)
+- Incomplete format: `echo 'do this thing' > /path/to/task/quickie-manual-file`
+- Partial format: `echo 'description = do this thing' > /path/to/task/quickie-manual-file`
+
+**Requirements**:
+- Application should detect invalid filenames (non-UUID format)
+- Application should detect incomplete or invalid TOML formats
+- Provide automatic recovery/fixing where possible
+- Provide a command (e.g., `mytask fix` or `mytask validate --fix`) to scan
+  and fix invalid files
+- Option to automatically fix files on detection (with confirmation or flag)
+- Generate proper UUIDs for files with invalid names
+- Complete partial TOML structures with required fields
+- Preserve as much content as possible from invalid files
+
+**Considerations**:
+- Should fixing be automatic or require explicit command?
+- How to handle files that are too broken to recover?
+- Should we log/report what was fixed?
+- Should we create backups before fixing?
+- How to handle conflicts when renaming files to UUID format?
+
+### Show Date Field
+
+**Problem**: Tasks may have a due date far in the future, but users don't want
+to see them in their task list until closer to the due date. This helps reduce
+clutter and focus on tasks that are relevant now.
+
+**Proposal**: Add a `show` or `show_date` field that controls when a task
+appears in listings. Tasks with a `show` date in the future should be hidden
+from normal task listings until that date is reached.
+
+**Use Cases**:
+- Task due in 6 months, but don't want to see it until 2 weeks before
+- Long-term projects that shouldn't clutter the immediate task list
+- Tasks that become relevant only at a specific time
+
+**Behavior**:
+- Tasks with `show` date in the future are excluded from `mytask list` by
+  default
+- Tasks with `show` date in the past or today are included normally
+- Option to show all tasks including future ones (e.g., `mytask list --all`)
+- If `show` date is not set, task is always visible (backward compatible)
+- `show` date can be before, equal to, or after `due` date
+
+**Format Preference**: Use simple relative text format (preference, to be
+finalized during implementation):
+- `-2 weeks` or `2 weeks` = 2 weeks before the due date
+- `+2 weeks` = 2 weeks after the due date (could be used to highlight past due
+  tasks)
+- Relative to the `due` date field
+- Human-readable and easy to edit manually
+
+**Considerations**:
+- Field name: `show`, `show_date`, or `visible_from`?
+- Should `show` date default to `created` date if not specified?
+- How to handle tasks where `show` date is after `due` date?
+- Should `mytask list` have a flag to include/exclude future tasks?
+- Parsing and validation of relative time formats
+- Interaction with filtering and querying commands
+- How to handle tasks without a `due` date (absolute date fallback?)
+
+**Status**: Future enhancement. Format preference noted above, but exact
+implementation details to be determined when this feature is implemented.
+
+### Reminder Field
+
+**Problem**: Users may want to be reminded about tasks at specific times
+before or on the due date. This is separate from the due date itself and
+allows for multiple reminders or reminder scheduling.
+
+**Proposal**: Add a `reminder` field (or `reminders` array) to support task
+reminders. Supports multiple reminders via array structure.
+
+**Use Cases**:
+- Remind me 1 week before a task is due
+- Remind me on the day a task is due
+- Multiple reminders at different intervals
+- Reminders independent of due date
+
+**Format Preference**: Use simple relative text format (preference, to be
+finalized during implementation):
+- `-2 weeks` or `2 weeks` = 2 weeks before the due date
+- `+2 weeks` = 2 weeks after the due date (could be used to highlight past due
+  tasks)
+- Relative to the `due` date field
+- Human-readable and easy to edit manually
+- Support arrays for multiple reminders: `reminders = ["-1 week", "-1 day", "0"]`
+
+**Considerations**:
+- Field structure: Single `reminder` field or `reminders` array? (Preference:
+  array to support multiple reminders)
+- Should reminders be relative to `due` date, `show` date, or absolute?
+- How are reminders delivered? (CLI notification, hook integration, etc.)
+- Should reminders be one-time or recurring?
+- Interaction with recurring tasks
+- Should reminders be stored in task file or separate reminder system?
+- Parsing and validation of relative time formats
+- Timezone handling for reminder times
+- How to handle tasks without a `due` date (absolute date fallback?)
+
+**Status**: Future enhancement. Format preference noted above, but exact
+structure and implementation details to be determined when this feature is
+implemented.

@@ -2,6 +2,67 @@
 
 This document captures the key design decisions made for the task manager system.
 
+## Forgiveness Principle
+
+**Core Philosophy**: The application must be **as forgiving as possible** while
+maintaining data integrity and usability.
+
+**Rationale**: Users should be able to quickly create tasks manually, make
+mistakes, and recover gracefully. The system should accommodate:
+- Invalid filenames (non-UUID format)
+- Incomplete or malformed TOML files
+- Manual edits that break format conventions
+- Quick command-line operations that don't follow strict formats
+
+**Implementation Approach**:
+- **Automatic recovery**: Where possible, automatically fix or complete invalid
+  data
+- **Graceful degradation**: Continue operating even with some invalid files
+- **Recovery tools**: Provide commands to validate and fix issues
+- **Clear error messages**: When automatic recovery isn't possible, provide
+  helpful guidance
+- **Preserve user intent**: When fixing issues, preserve as much user content
+  as possible
+
+**Examples**:
+- Files with invalid names should be automatically renamed to UUID format
+- Partial TOML structures should be completed with required fields
+- Invalid date formats should be parsed leniently where possible
+- Missing required fields should be inferred or prompted for
+- CLI option formats are forgiving: `--tag`, `-tag`, `tag:`, `tag=` are all
+  equivalent (only the option name matters)
+- Multiple values can be specified as comma-separated lists or repeated
+  options, accommodating different user preferences and typos
+
+### Notes Entry Timestamp Handling
+
+When notes entries are manually added without timestamps, the application
+handles them forgivingly:
+
+- **Entry between existing entries**: If a note entry is added manually
+  without a timestamp and is positioned between existing entries, the
+  application will assign a timestamp that is the shortest reasonable time
+  after the previous entry's timestamp. This preserves chronological order
+  while accommodating manual edits.
+
+- **Last entry**: If a note entry is added manually without a timestamp and
+  is the last entry in the notes array, the application will use the current
+  timestamp (when the program is run) as the entry's timestamp.
+
+- **Sorting**: Notes entries should be maintained in chronological order by
+  timestamp. The application will need to sort the `[[notes]]` array when
+  reading task files to ensure proper date ordering, especially after manual
+  edits or when entries are added out of order.
+
+This forgiving approach allows users to quickly add notes without worrying
+about timestamp formatting, while the application maintains proper
+chronological ordering.
+
+See [TODO.md](../TODO.md) for future work on invalid filename and format
+recovery.
+
+---
+
 ## Storage Model Decision
 
 **Initial approach**: Flat `tasks/` directory with all task files in a single location.

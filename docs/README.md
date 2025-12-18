@@ -87,6 +87,8 @@ I want to formalize this idea into a coherent tool and data model.
      * `grep` for things.
      * `sed`/`awk`/`jq` the data.
      * Fix broken state by hand.
+   * **Forgiving**: The system handles invalid filenames, incomplete formats,
+     and manual edits gracefully, automatically fixing issues where possible.
 
 3. **Simple, robust conflict handling**
 
@@ -103,7 +105,7 @@ I want to formalize this idea into a coherent tool and data model.
 
      * ID
      * Description
-     * Status (pending, done, deleted, etc.)
+     * Status (pending, done, deleted, archived, etc.)
      * Created/modified timestamps
      * Due date / scheduled date
      * Tags

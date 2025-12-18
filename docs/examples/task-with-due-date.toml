@@ -1,0 +1,14 @@
+# Task with Due Date Example
+#
+# This example demonstrates a task with a due date field. The due date
+# can be specified as a date only or with a full timestamp.
+
+[task]
+description = "Submit quarterly report"
+status = "pending"
+due = "2024-01-20T17:00:00Z"
+
+[meta]
+id = "a1b2c3d4-e5f6-4789-a012-3456789abcde"
+created = "2024-01-10T08:00:00Z"
+modified = "2024-01-15T14:20:00Z"

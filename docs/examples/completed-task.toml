@@ -1,0 +1,19 @@
+# Completed Task Example
+#
+# This example demonstrates a task that has been completed. The status
+# field is set to "done" and the modified timestamp reflects when it
+# was completed.
+
+[task]
+description = "Fix bug in authentication module"
+status = "done"
+
+[meta]
+id = "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+created = "2024-01-12T11:15:00Z"
+modified = "2024-01-14T16:45:00Z"
+
+[[notes]]
+timestamp = "2024-01-14T16:45:00Z"
+type = "log"
+entry = "Status changed from 'pending' to 'done'"
