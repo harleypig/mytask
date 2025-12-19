@@ -1,84 +1,77 @@
 ---
-# Pre-commit configuration - Checks only (non-modifying)
-# See https://pre-commit.com for more information
-
 repos:
-  # Generic checks ###############################################################
-  # General file checks (non-modifying only)
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
-    hooks:
-      - id: no-commit-to-branch
-        description: "Prevent commits to protected branches (default: master, main)"
-        args: []
-      - id: check-symlinks
-        description: Checks for broken symlinks
-      - id: check-yaml
-        description: Validates YAML syntax
-      - id: check-json
-        description: Validates JSON syntax
-      - id: check-toml
-        description: Validates TOML syntax
-      - id: check-added-large-files
-        description: Prevents committing large files
-      - id: check-merge-conflict
-        description: Detects merge conflict markers
-      - id: check-case-conflict
-        description: Detects case conflicts in filenames
-      - id: mixed-line-ending
+  - hooks:
+      - args: []
+        description: 'Prevent commits to protected branches (default: master, main)'
+        id: no-commit-to-branch
+      - description: Checks for broken symlinks
+        id: check-symlinks
+      - description: Validates YAML syntax
+        id: check-yaml
+      - description: Validates JSON syntax
+        id: check-json
+      - description: Validates TOML syntax
+        id: check-toml
+      - description: Prevents committing large files
+        id: check-added-large-files
+      - description: Detects merge conflict markers
+        id: check-merge-conflict
+      - description: Detects case conflicts in filenames
+        id: check-case-conflict
+      - args:
+          - --fix=no
         description: Checks for mixed line endings
-        # Note: check-only here; fixing variant lives in .pre-commit-config-fix.yaml
-        args: ['--fix=no']
-      - id: check-executables-have-shebangs
-        description: Ensures executable files have shebangs
-      - id: check-shebang-scripts-are-executable
-        description: Ensures scripts with shebangs are executable
-      - id: detect-private-key
-        description: Detects private keys in the repository
-
-  # Perl checks ##################################################################
-  # Perl syntax checking (local hook)
-  # Sources local-env.sh if available to get proper PERL5LIB
-  - repo: local
-    hooks:
-      - id: perl-syntax-check
-        name: Perl syntax check
+        id: mixed-line-ending
+      - description: Ensures executable files have shebangs
+        id: check-executables-have-shebangs
+      - description: Ensures scripts with shebangs are executable
+        id: check-shebang-scripts-are-executable
+      - description: Detects private keys in the repository
+        id: detect-private-key
+    repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+  - hooks:
+      - description: Checks Perl syntax (allows missing dependencies)
         entry: >
           bash -c '[ -f scripts/local-env.sh ] && source scripts/local-env.sh; output=$(perl -c "$@" 2>&1); if echo "$output" | grep -q "syntax OK"; then exit 0; elif echo "$output" | grep -qE "(syntax error|Compilation failed)"; then echo "$output" >&2; exit 1; else exit 0; fi' --
+        id: perl-syntax-check
         language: system
-        types: [perl]
-        description: Checks Perl syntax (allows missing dependencies)
+        name: Perl syntax check
         pass_filenames: true
-
-  # Shell checks #################################################################
-  # Shell script linting
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.6
-    hooks:
-      - id: shellcheck
+        types:
+          - perl
+    repo: local
+  - hooks:
+      - args:
+          - --severity=warning
         description: Lints shell scripts
-        args: ['--severity=warning']
         files: \.(sh|bash)$
-
-  # Configuration checks #########################################################
-  # YAML lint (read-only)
-  - repo: https://github.com/adrienverge/yamllint
+        id: shellcheck
+    repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+  - hooks:
+      - description: Lints YAML files
+        id: yamllint
+    repo: https://github.com/adrienverge/yamllint
     rev: v1.33.0
-    hooks:
-      - id: yamllint
-        description: Lints YAML files
-
-  # GitHub Actions lint
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.9
-    hooks:
+  - hooks:
       - id: actionlint-docker
-
-  # YAML formatter (docker, check-only via -lint)
-  - repo: https://github.com/google/yamlfmt
-    rev: v0.20.0
-    hooks:
-      - id: yamlfmt
-        name: yamlfmt (docker, lint mode)
+    repo: https://github.com/rhysd/actionlint
+    rev: v1.7.9
+  - hooks:
+      - args:
+          - -lint
+          - -quiet
         description: Lints YAML files using yamlfmt with the repo .yamlfmt config
-        args: ["-lint", "-quiet"]
+        id: yamlfmt
+        name: yamlfmt (docker, lint mode)
+    repo: https://github.com/google/yamlfmt
+    rev: v0.20.0
+  - hooks:
+      - id: commitizen
+        name: commitizen (commit-msg)
+        stages: [commit-msg]
+      - id: commitizen-branch
+        stages: [pre-push]
+    repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.10.1
