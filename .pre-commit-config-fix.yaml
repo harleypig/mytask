@@ -121,16 +121,6 @@ repos:
         name: yamlfmt (docker, format)
         description: Formats YAML files using yamlfmt with the repo .yamlfmt config
 
-  # Commit message / branch checks (non-modifying, included for parity)
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.10.1
-    hooks:
-      - id: commitizen
-        name: commitizen (commit-msg)
-        stages: [commit-msg]
-      - id: commitizen-branch
-        stages: [pre-push]
-
 # Perl formatting (if perltidy is available)
 #   Note: This requires perltidy to be installed separately
 #   Uncomment if perltidy is installed and desired
