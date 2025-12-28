@@ -16,17 +16,17 @@ use MyTask::Schema qw(validate_task_file get_task_schema);
 # Test schema definition
 subtest "Schema definition" => sub {
   my $schema = get_task_schema();
-  ok($schema, "Schema definition exists");
-  ok(exists $schema->{required}, "Has required sections");
-  ok(exists $schema->{properties}, "Has properties definition");
-  ok(exists $schema->{properties}{task}, "Has task section schema");
-  ok(exists $schema->{properties}{meta}, "Has meta section schema");
+  ok( $schema,                            "Schema definition exists" );
+  ok( exists $schema->{required},         "Has required sections" );
+  ok( exists $schema->{properties},       "Has properties definition" );
+  ok( exists $schema->{properties}{task}, "Has task section schema" );
+  ok( exists $schema->{properties}{meta}, "Has meta section schema" );
 };
 
 # Test valid example files
 subtest "Valid example files" => sub {
   my $examples_dir = path('docs/examples');
-  my @files = qw(
+  my @files        = qw(
     simple-task.toml
     task-with-notes.toml
     task-with-due-date.toml
@@ -36,14 +36,14 @@ subtest "Valid example files" => sub {
   );
 
   for my $filename (@files) {
-    my $file = $examples_dir->child($filename);
+    my $file    = $examples_dir->child($filename);
     my $content = $file->slurp;
-    my $data = TOML::Tiny->new->decode($content);
+    my $data    = TOML::Tiny->new->decode($content);
 
-    my ($valid, $error) = validate_task_file($data);
-    ok($valid, "$filename validates against schema") or diag("Error: $error");
+    my ( $valid, $error ) = validate_task_file($data);
+    ok( $valid, "$filename validates against schema" ) or diag("Error: $error");
   }
-};
+}; ## end "Valid example files" => sub
 
 # Test edge cases - missing required fields
 subtest "Missing required fields" => sub {
@@ -56,24 +56,24 @@ subtest "Missing required fields" => sub {
     },
     "missing description" => {
       task => { status => "pending" },
-      meta => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
+      meta => { id     => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
     },
     "missing status" => {
       task => { description => "Test" },
       meta => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
     },
     "missing id" => {
-      task => { description => "Test", status => "pending" },
-      meta => { created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
+      task => { description => "Test",                 status   => "pending" },
+      meta => { created     => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
     },
   );
 
-  for my $case (keys %test_cases) {
-    my ($valid, $error) = validate_task_file($test_cases{$case});
-    ok(!$valid, "$case should fail validation");
-    like($error, qr/required|missing/i, "$case error mentions missing field");
+  for my $case ( keys %test_cases ) {
+    my ( $valid, $error ) = validate_task_file( $test_cases{$case} );
+    ok( !$valid, "$case should fail validation" );
+    like( $error, qr/required|missing/i, "$case error mentions missing field" );
   }
-};
+}; ## end "Missing required fields" => sub
 
 # Test edge cases - invalid field values
 subtest "Invalid field values" => sub {
@@ -104,34 +104,34 @@ subtest "Invalid field values" => sub {
     },
   );
 
-  for my $case (keys %test_cases) {
-    my ($valid, $error) = validate_task_file($test_cases{$case});
-    ok(!$valid, "$case should fail validation");
-    ok($error, "$case provides error message");
+  for my $case ( keys %test_cases ) {
+    my ( $valid, $error ) = validate_task_file( $test_cases{$case} );
+    ok( !$valid, "$case should fail validation" );
+    ok( $error,  "$case provides error message" );
   }
-};
+}; ## end "Invalid field values" => sub
 
 # Test edge cases - notes validation
 subtest "Notes validation" => sub {
   my %test_cases = (
     "note without timestamp" => {
-      task => { description => "Test", status => "pending" },
-      meta => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
-      notes => [{ entry => "Test note" }],
+      task  => { description => "Test", status => "pending" },
+      meta  => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
+      notes => [ { entry => "Test note" } ],
     },
     "note without entry" => {
-      task => { description => "Test", status => "pending" },
-      meta => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
-      notes => [{ timestamp => "2024-01-15T10:30:00Z" }],
+      task  => { description => "Test", status => "pending" },
+      meta  => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
+      notes => [ { timestamp => "2024-01-15T10:30:00Z" } ],
     },
     "note with invalid type" => {
-      task => { description => "Test", status => "pending" },
-      meta => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
-      notes => [{ timestamp => "2024-01-15T10:30:00Z", entry => "Test", type => "invalid" }],
+      task  => { description => "Test", status => "pending" },
+      meta  => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
+      notes => [ { timestamp => "2024-01-15T10:30:00Z", entry => "Test", type => "invalid" } ],
     },
     "valid notes" => {
-      task => { description => "Test", status => "pending" },
-      meta => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
+      task  => { description => "Test", status => "pending" },
+      meta  => { id => "550e8400-e29b-41d4-a716-446655440000", created => "2024-01-15T10:30:00Z", modified => "2024-01-15T10:30:00Z" },
       notes => [
         { timestamp => "2024-01-15T10:30:00Z", entry => "Test note" },
         { timestamp => "2024-01-16T10:30:00Z", entry => "Another note", type => "log" },
@@ -139,32 +139,32 @@ subtest "Notes validation" => sub {
     },
   );
 
-  for my $case (keys %test_cases) {
-    my ($valid, $error) = validate_task_file($test_cases{$case});
-    if ($case eq "valid notes") {
-      ok($valid, "$case should pass validation");
+  for my $case ( keys %test_cases ) {
+    my ( $valid, $error ) = validate_task_file( $test_cases{$case} );
+    if ( $case eq "valid notes" ) {
+      ok( $valid, "$case should pass validation" );
     } else {
-      ok(!$valid, "$case should fail validation");
+      ok( !$valid, "$case should fail validation" );
     }
   }
-};
+}; ## end "Notes validation" => sub
 
 # Test edge cases - special characters
 subtest "Special characters in fields" => sub {
   my $valid_task = {
     task => {
       description => "Test with special chars: \"quotes\", 'apostrophes', \n newlines, unicode: 测试 🎉",
-      status => "pending",
+      status      => "pending",
     },
     meta => {
-      id => "550e8400-e29b-41d4-a716-446655440000",
-      created => "2024-01-15T10:30:00Z",
+      id       => "550e8400-e29b-41d4-a716-446655440000",
+      created  => "2024-01-15T10:30:00Z",
       modified => "2024-01-15T10:30:00Z",
     },
   };
 
-  my ($valid, $error) = validate_task_file($valid_task);
-  ok($valid, "Special characters in description are allowed");
+  my ( $valid, $error ) = validate_task_file($valid_task);
+  ok( $valid, "Special characters in description are allowed" );
 };
 
 done_testing;

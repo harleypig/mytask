@@ -1,9 +1,11 @@
-# Globals
-severity = brutal
+# Globals (lenient)
+severity = 5
 # force = 0
 # only = 0
 # allow-unsafe = 0
-profile-strictness = warn
+profile-strictness = quiet
+# Relaxed exclusions
+exclude = TestingAndDebugging::RequireUseStrict Bangs::ProhibitBitwiseOperators ValuesAndExpressions::ProhibitAccessOfPrivateData InputOutput::ProhibitTwoArgOpen InputOutput::ProhibitBarewordFileHandles
 # color = 0
 # pager =
 top = 10
@@ -666,19 +668,6 @@ verbose = %s:%f:%l:%c:%p %m\n
 # severity                           = 1
 # maximum_violations_per_document    = no_limit
 
-# Provide text to display with your pod links.
-[Documentation::RequirePodLinksIncludeText]
-# set_themes                         = core maintenance
-# add_themes                         =
-# severity                           = 2
-# maximum_violations_per_document    = no_limit
-
-# Allow external sections without text.
-# allow_external_sections = 1
-
-# Allow internal sections without text.
-# allow_internal_sections = 1
-
 # Organize your POD into the customary sections.
 [Documentation::RequirePodSections]
 lib_sections    = NAME | VERSION | SYNOPSIS | EXPORT | SUBROUTINES AND METHODS | AUTHOR | BUGS | SUPPORT | ACKNOWLEDGEMENTS | LICENSE AND COPYRIGHT
@@ -1225,90 +1214,6 @@ file_lexical_variables              = :all_upper
 # severity                           = 1
 # maximum_violations_per_document    = no_limit
 
-# Check module for use of "Dumper"
-[OTRS::ProhibitDumper]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Do no use FetchrowHashref
-[OTRS::ProhibitFetchrowHashref]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# do not use "localtime"
-[OTRS::ProhibitLocaltime]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Do not use "not", "and" and other low precedence operators
-[OTRS::ProhibitLowPrecedenceOps]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Do not use "open"
-[OTRS::ProhibitOpen]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Do not use "push @ISA, ..."
-[OTRS::ProhibitPushISA]
-# set_themes                         = otrs
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Do not use "require"
-[OTRS::ProhibitRequire]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Do not use File::Path's rmtree
-[OTRS::ProhibitRmtree]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Some core functions should not be used
-[OTRS::ProhibitSomeCoreFunctions]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Variable, subroutine, and package names have to be in CamelCase
-[OTRS::RequireCamelCase]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Use parens when a method is called
-[OTRS::RequireParensWithMethods]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
-# Check if modules have a "true" return value
-[OTRS::RequireTrueReturnValueForModules]
-# set_themes                         = otrs otrs_lt_3_3
-# add_themes                         =
-# severity                           = 5
-# maximum_violations_per_document    = no_limit
-
 # Prohibit indirect object call syntax.
 [Objects::ProhibitIndirectSyntax]
 # set_themes                         = certrule core maintenance pbp
@@ -1725,20 +1630,6 @@ file_lexical_variables              = :all_upper
 # severity                           = 2
 # maximum_violations_per_document    = no_limit
 # Cannot programmatically discover what parameters this policy takes.
-
-# Ban next/last/return in Try::Tiny blocks
-[TryTiny::ProhibitExitingSubroutine]
-# set_themes                         = bugs
-# add_themes                         =
-# severity                           = 4
-# maximum_violations_per_document    = no_limit
-
-# Always include a "catch" block when using "try"
-[TryTiny::RequireCatch]
-# set_themes                         = bugs
-# add_themes                         =
-# severity                           = 4
-# maximum_violations_per_document    = no_limit
 
 # disallow bareword before <
 [ValuesAndExpressions::ConstantBeforeLt]
@@ -2285,4 +2176,3 @@ file_lexical_variables              = :all_upper
 
 # No description available.
 # strict_quotes =
-

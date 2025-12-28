@@ -35,23 +35,14 @@ repos:
       - id: detect-private-key
         description: Detects private keys in the repository
 
-  # Perl syntax checking (local hook)
-  # Sources local-env.sh if available to get proper PERL5LIB
-  - repo: local
+  # Perl syntax/format check (non-modifying)
+  - repo: https://github.com/perltidy/perltidy
+    rev: "20250912.03"
     hooks:
-      - id: perl-syntax-check
-        name: Perl syntax check
-        entry: |
-          bash -c '
-            [ -f scripts/local-env.sh ] && source scripts/local-env.sh;
-            output=$(perl -c "$@" 2>&1);
-            if echo "$output" | grep -q "syntax OK"; then exit 0;
-            elif echo "$output" | grep -qE "(syntax error|Compilation failed)";
-            then echo "$output" >&2; exit 1; else exit 0; fi' --
-        language: system
-        types: [perl]
-        description: Checks Perl syntax (allows missing dependencies)
-        pass_filenames: true
+      - id: perltidy
+        name: perltidy (check-only)
+        description: Run perltidy to validate formatting/syntax without modifying files
+        entry: bash -c 'for f in "$@"; do perltidy --standard-output "$f" >/dev/null; done' --
 
   # Shell script linting
   - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -101,3 +92,18 @@ repos:
         stages: [commit-msg]
       - id: commitizen-branch
         stages: [pre-push]
+
+  # Test suite (non-modifying)
+  - repo: local
+    hooks:
+      - id: perl-prove
+        name: perl prove
+        language: system
+        pass_filenames: false
+        entry: scripts/run-perl-prove.sh
+      - id: perlcritic
+        name: perlcritic
+        language: system
+        pass_filenames: true
+        types: [perl]
+        entry: scripts/run-perlcritic.sh

@@ -62,24 +62,18 @@ repos:
           - --top-keys
           - $schema,title,type,description,additionalProperties,required
 
-  # Perl checks ##################################################################
-  # Perl syntax checking (same as default config)
-  # Sources local-env.sh if available to get proper PERL5LIB
-  - repo: local
+  # Perl formatting (modifying)
+  - repo: https://github.com/perltidy/perltidy
+    rev: "20250912.03"
     hooks:
-      - id: perl-syntax-check
-        name: Perl syntax check
-        entry: |
-          bash -c '
-            [ -f scripts/local-env.sh ] && source scripts/local-env.sh;
-            output=$(perl -c "$@" 2>&1);
-            if echo "$output" | grep -q "syntax OK"; then exit 0;
-            elif echo "$output" | grep -qE "(syntax error|Compilation failed)";
-            then echo "$output" >&2; exit 1; else exit 0; fi' --
-        language: system
-        types: [perl]
-        description: Checks Perl syntax (allows missing dependencies)
-        pass_filenames: true
+      - id: perltidy
+        name: perltidy (format)
+        description: Run perltidy to format Perl sources
+        args:
+          - --nostandard-output
+          - --backup-and-modify-in-place
+          - --standard-error-output
+          - --backup-file-extension=/
 
   # Shell checks #################################################################
   # Shell script linting (same as default config)
@@ -121,15 +115,17 @@ repos:
         name: yamlfmt (docker, format)
         description: Formats YAML files using yamlfmt with the repo .yamlfmt config
 
-# Perl formatting (if perltidy is available)
-#   Note: This requires perltidy to be installed separately
-#   Uncomment if perltidy is installed and desired
-# - repo: local
-#   hooks:
-#     - id: perltidy
-#       name: perltidy
-#       entry: perltidy
-#       language: system
-#       types: [perl]
-#       args: ['--profile=.perltidyrc', '--backup-and-modify-in-place']
-#       pass_filenames: true
+  # Test suite (non-modifying)
+  - repo: local
+    hooks:
+      - id: perl-prove
+        name: perl prove
+        language: system
+        pass_filenames: false
+        entry: scripts/run-perl-prove.sh
+      - id: perlcritic
+        name: perlcritic
+        language: system
+        pass_filenames: true
+        types: [perl]
+        entry: scripts/run-perlcritic.sh #magic___^_^___line
