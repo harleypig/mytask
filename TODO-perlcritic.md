@@ -18,6 +18,14 @@
   - [x] Apply /x or suppress for long regexes in tests where appropriate.
   - [x] Decide on postderef enforcement (migrate to ->@* / ->%* or suppress in tests).
 - [ ] Evaluate feasibility of severity 2; list blockers if not practical.
+  - [ ] Address long schema path line / method chain (Tics::ProhibitLongLines, ValuesAndExpressions::ProhibitLongChainsOfMethodCalls) in `lib/MyTask/Schema.pm`.
+  - [ ] Replace `unless` blocks in `lib/MyTask/Schema.pm` (ControlStructures::ProhibitUnlessBlocks) with clearer `if`/early-return form.
+  - [ ] Fix spacing flag near bottom of `lib/MyTask/Schema.pm` (CodeLayout::ProhibitSpaceIndentation).
+  - [ ] Handle empty quotes fallback warning in `lib/MyTask/Schema.pm` (Lax::ProhibitEmptyQuotes::ExceptAsFallback).
+  - [ ] Remove or justify top-level no-critic in `t/02-examples.t` (Miscellanea::ProhibitUselessNoCritic).
+  - [ ] Replace `$@` usage in `t/02-examples.t` diagnostics (Variables::ProhibitPunctuationVars).
+  - [ ] Reorder equality comparisons to put constants on the left in `t/02-examples.t` (ValuesAndExpressions::RequireConstantOnLeftSideOfEqualityChecks).
+  - [ ] Break long lines in `t/02-examples.t` to satisfy line-length limits.
 - [ ] Evaluate feasibility of severity 1; list blockers if not practical.
 - [ ] Add a dedicated perlcritic CI job (non-modifying) to enforce the stricter profile.
 - [ ] Document perlcritic workflow in `docs/DEVELOPMENT.md` (how to run, common suppressions, expected severity).
