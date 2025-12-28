@@ -68,11 +68,13 @@ sub validate_task_file {
   }
 
   # Additional cross-field validations (not expressible in JSON Schema)
+  ## no critic (ValuesAndExpressions::ProhibitAccessOfPrivateData)
   if ( exists $data->{meta}{created} && exists $data->{meta}{modified} ) {
     if ( $data->{meta}{modified} lt $data->{meta}{created} ) {
       return ( 0, "modified timestamp must be >= created timestamp" );
     }
   }
+  ## use critic
 
   return ( 1, "" );
 } ## end sub validate_task_file

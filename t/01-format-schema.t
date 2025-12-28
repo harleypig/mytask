@@ -11,6 +11,7 @@ BEGIN {
   };
 }
 
+## no critic (ValuesAndExpressions::ProhibitAccessOfPrivateData)
 use MyTask::Schema qw(validate_task_file get_task_schema);
 
 # Test schema definition
@@ -168,3 +169,4 @@ subtest "Special characters in fields" => sub {
 };
 
 done_testing;
+## use critic

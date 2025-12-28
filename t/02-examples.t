@@ -5,6 +5,7 @@ use Test::More;
 use Path::Tiny;
 
 # Check if TOML::Tiny is available
+## no critic (ValuesAndExpressions::ProhibitAccessOfPrivateData)
 BEGIN {
   eval { require TOML::Tiny; 1 } or plan skip_all => 'TOML::Tiny not available';
 }
@@ -218,3 +219,4 @@ subtest "task-with-alias.toml - alias field" => sub {
 };
 
 done_testing;
+## use critic
