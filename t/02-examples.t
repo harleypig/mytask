@@ -1,14 +1,15 @@
 #!/usr/bin/env perl
-## no critic (Modules::ProhibitExcessMainComplexity)
 use strict;
 use warnings;
 use Test::More;
 use Path::Tiny qw(path);
 
-## no critic (Subroutines::ProhibitCallsToUndeclaredSubs Subroutines::ProhibitCallsToUnexportedSubs Reneeb::ProhibitBlockEval Modules::ProhibitExcessMainComplexity CodeLayout::TabIndentSpaceAlign CodeLayout::ProhibitHashBarewords Bangs::ProhibitVagueNames)
+## no critic (Modules::ProhibitExcessMainComplexity CodeLayout::TabIndentSpaceAlign CodeLayout::ProhibitHashBarewords CodeLayout::RequireTrailingCommaAtNewline Bangs::ProhibitCommentedOutCode Subroutines::ProhibitCallsToUndeclaredSubs Subroutines::ProhibitCallsToUnexportedSubs Bangs::ProhibitVagueNames)
+# Test file: targeted suppressions kept minimal for reliability; see WORKFLOW.md for test suppression guidance.
 
 # Check if TOML::Tiny is available
 BEGIN {
+  ## no critic (Reneeb::ProhibitBlockEval Subroutines::ProhibitCallsToUndeclaredSubs)
   eval { require TOML::Tiny; 1 } or plan skip_all => 'TOML::Tiny not available';
 }
 
@@ -28,7 +29,8 @@ my @example_files = qw(
   task-with-alias.toml
 );
 
-# Helper to run per-file checks (kept to control main complexity; suppression remains)
+# Helper to run per-file checks (kept to control main complexity;
+# Modules::ProhibitExcessMainComplexity suppressed at file level)
 ## no critic (logicLAB::RequireParamsValidate Subroutines::RequireFinalReturn)
 sub run_example_checks {
   my ( $filename, $file ) = @_;
@@ -42,9 +44,11 @@ sub run_example_checks {
 
     # Read and parse TOML
     my $content = eval { $file->slurp };
+    ## no critic (Variables::ProhibitPunctuationVars) # test diag uses $@
     ok( $content, "Can read $filename" ) or diag("Error: $@");
 
     my $data = eval { TOML::Tiny->new->decode($content) };
+    ## no critic (Variables::ProhibitPunctuationVars) # test diag uses $@
     ok( $data, "$filename is valid TOML" ) or diag("Parse error: $@");
     next unless $data;
 
@@ -74,8 +78,8 @@ sub run_example_checks {
       # Validate status is one of allowed values
       if ( exists $data->{task}{status} ) {
         like(
-          $data->{task}{status}, qr/^(pending|done|deleted|archived)$/x,
-          "$filename status is valid"
+          $data->{task}{status}, qr/^(pending|done|deleted|archived)$/msx,
+          "$filename status is valid",
         );
       }
     } ## end if ( exists $data->{task...})
@@ -101,8 +105,8 @@ sub run_example_checks {
         ## no critic (RegularExpressions::ProhibitComplexRegexes)
         like(
           $data->{meta}{id},
-          qr/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/ix,
-          "$filename id is valid UUID v4"
+          qr/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/imsx,
+          "$filename id is valid UUID v4",
         );
       }
 
@@ -110,16 +114,16 @@ sub run_example_checks {
       if ( exists $data->{meta}{created} ) {
         like(
           $data->{meta}{created},
-          qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/x,
-          "$filename created timestamp is ISO 8601 format"
+          qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/msx,
+          "$filename created timestamp is ISO 8601 format",
         );
       }
 
       if ( exists $data->{meta}{modified} ) {
         like(
           $data->{meta}{modified},
-          qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/x,
-          "$filename modified timestamp is ISO 8601 format"
+          qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/msx,
+          "$filename modified timestamp is ISO 8601 format",
         );
       }
 
@@ -138,7 +142,7 @@ sub run_example_checks {
     ## no critic (ValuesAndExpressions::ProhibitAccessOfPrivateData)
     if ( exists $data->{notes} ) {
       my $notes_ref = $data->{notes};
-      ok( ref($notes_ref) eq 'ARRAY', "$filename notes is an array" );
+      ok( 'ARRAY' eq ref($notes_ref), "$filename notes is an array" );
       if ( ref($notes_ref) ne 'ARRAY' ) {
         return;
       }
@@ -148,8 +152,8 @@ sub run_example_checks {
       ## no critic (ValuesAndExpressions::ProhibitAccessOfPrivateData)
       for my $i ( 0 .. $#notes ) {
         my $note = $notes[$i];
-        ok( ref($note) eq 'HASH', "$filename note[$i] is a hash" );
-        next unless ref($note) eq 'HASH';
+        ok( 'HASH' eq ref($note), "$filename note[$i] is a hash" );
+        next unless 'HASH' eq ref($note);
 
         ok( exists $note->{timestamp}, "$filename note[$i] has timestamp" );
         ok( exists $note->{entry},     "$filename note[$i] has entry" );
@@ -157,22 +161,22 @@ sub run_example_checks {
         if ( exists $note->{timestamp} ) {
   like(
     $note->{timestamp},
-    qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/x,
-    "$filename note[$i] timestamp is ISO 8601 format"
+    qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/msx,
+    "$filename note[$i] timestamp is ISO 8601 format",
   );
         }
 
         if ( exists $note->{entry} ) {
   ok(
     length( $note->{entry} ) > 0,
-    "$filename note[$i] entry is non-empty"
+    "$filename note[$i] entry is non-empty",
   );
         }
 
         if ( exists $note->{type} ) {
   like(
-    $note->{type}, qr/^(note|log|comment|status-change)$/x,
-    "$filename note[$i] type is valid"
+    $note->{type}, qr/^(note|log|comment|status-change)$/msx,
+    "$filename note[$i] type is valid",
   );
         }
       } ## end for my $i ( 0 .. $#notes)
@@ -207,7 +211,8 @@ subtest "task-with-notes.toml - journal entries" => sub {
   ok( $data->{notes}->@* >= 2, "Has multiple note entries" );
 
   # Check for app log entry
-  my $has_log = grep { exists $_->{type} && $_->{type} eq 'log' } $data->{notes}->@*;
+  my $has_log =
+    grep { exists $_->{type} && 'log' eq $_->{type} } $data->{notes}->@*;
   ok( $has_log, "Has at least one log entry" );
 };
 

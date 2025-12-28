@@ -90,7 +90,11 @@ subtest "Missing required fields" => sub {
   for my $case ( keys %test_cases ) {
     my ( $valid, $error ) = validate_task_file( $test_cases{$case} );
     ok( !$valid, "$case should fail validation" );
-    like( $error, qr/required | missing/ix, "$case error mentions missing field" );
+    like(
+      $error,
+      qr/required | missing/imsx,
+      "$case error mentions missing field",
+    );
   }
 }; ## end "Missing required fields" => sub
 
@@ -130,7 +134,9 @@ subtest "Invalid field values" => sub {
       },
     },
     "empty description" => {
+      ## no critic (Lax::ProhibitEmptyQuotes::ExceptAsFallback)
       'task' => { 'description' => "", 'status' => "pending" },
+      ## use critic
       'meta' => {
         'id'       => "550e8400-e29b-41d4-a716-446655440000",
         'created'  => "2024-01-15T10:30:00Z",
@@ -202,7 +208,7 @@ subtest "Notes validation" => sub {
 
   for my $case ( keys %test_cases ) {
     my ($valid) = validate_task_file( $test_cases{$case} );
-    if ( $case eq "valid notes" ) {
+    if ( "valid notes" eq $case ) {
       ok( $valid, "$case should pass validation" );
     } else {
       ok( !$valid, "$case should fail validation" );
@@ -212,6 +218,7 @@ subtest "Notes validation" => sub {
 
 # Test edge cases - special characters
 subtest "Special characters in fields" => sub {
+  ## no critic (ValuesAndExpressions::RestrictLongStrings CodeLayout::TabIndentSpaceAlign)
   my $valid_task = {
     'task' => {
       'description' => "Test with special chars: \"quotes\", 'apostrophes', \n newlines, unicode: 测试 🎉",
@@ -226,7 +233,8 @@ subtest "Special characters in fields" => sub {
 
   my ($valid) = validate_task_file($valid_task);
   ok( $valid, "Special characters in description are allowed" );
-};
+  ## use critic
+}; ## end "Special characters in fields" => sub
 
 done_testing;
 ## use critic

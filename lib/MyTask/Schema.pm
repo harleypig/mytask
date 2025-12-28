@@ -20,15 +20,20 @@ our @EXPORT_OK = qw(
 my $validator;
 my $schema_data;
 
+sub _schema_path {
+  my $root = path(__FILE__)->parent->parent->parent;
+  return $root->child('docs/schema/task-file-schema.json');
+}
+
 # Load JSON Schema from file (source of truth)
 sub _load_schema {
   my @args = @_;
   validate_pos(@args);
   return ( $validator, $schema_data ) if $validator;
 
-  my $schema_file = path(__FILE__)->parent->parent->parent->child('docs')->child('schema')->child('task-file-schema.json');
+  my $schema_file = _schema_path();
 
-  unless ( $schema_file->exists ) {
+  if ( !$schema_file->exists ) {
     ## no critic (ErrorHandling::RequireUseOfExceptions)
     croak "Schema file not found: $schema_file";
     ## use critic
@@ -61,7 +66,7 @@ sub validate_task_file {
   # Validate against JSON Schema
   my $result = $v->evaluate( $task_data, $schema );
 
-  unless ( $result->valid ) {
+  if ( !$result->valid ) {
 
     # Format error messages
     # JSON::Schema::Modern returns error objects with ->error and ->instance_location methods
@@ -77,7 +82,7 @@ sub validate_task_file {
   }
 
   # Additional cross-field validations (not expressible in JSON Schema)
-  ## no critic (ValuesAndExpressions::ProhibitAccessOfPrivateData CodeLayout::TabIndentSpaceAlign)
+  ## no critic (ValuesAndExpressions::ProhibitAccessOfPrivateData CodeLayout::TabIndentSpaceAlign CodeLayout::ProhibitSpaceIndentation)
   if ( exists $task_data->{'meta'}{'created'} && exists $task_data->{'meta'}{'modified'} ) {
     my $created  = $task_data->{'meta'}{'created'};
     my $modified = $task_data->{'meta'}{'modified'};
@@ -87,7 +92,7 @@ sub validate_task_file {
   }
   ## use critic
 
-  return ( 1, "" );
+  return ( 1, undef );
 } ## end sub validate_task_file
 
 1;

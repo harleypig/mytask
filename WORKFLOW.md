@@ -153,6 +153,20 @@ line length.
 documentation should use 2-space indentation. Tabs should only be used when
 required by external tools (such as Makefiles).
 
+### Perl Critic and Test-Specific Suppressions
+
+- Prefer fixing violations; use scoped `## no critic` only when unavoidable.
+- If CodeLayout::ProhibitSpaceIndentation triggers after `perltidy`, fix the
+  spacing; if it still flags, add the narrowest suppression and note why.
+- Tests may carry targeted suppressions (e.g., for `$@` diagnostics or
+  test-only helpers); include a brief comment explaining the need.
+- `$@` usage: in production code, capture into a lexical (or `$EVAL_ERROR`);
+  in tests, a scoped suppression is acceptable with a comment.
+- Equality checks: put constants on the left when practical; document any
+  exceptions where readability would suffer.
+- Regex style: prefer `qr//x` with indentation for long/complex patterns; use
+  scoped suppressions only for unavoidable literals.
+
 ### Pre-commit Usage
 
 - If pre-commit is installed and a fix config (`.pre-commit-config-fix.yaml`) exists, run it before committing:

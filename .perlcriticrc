@@ -1,11 +1,11 @@
 # Globals (lenient)
-severity = 3
+severity = 2
 # force = 0
 # only = 0
 allow-unsafe = 0
 profile-strictness = fatal
 # Relaxed exclusions
-exclude =
+exclude = Tics::ProhibitLongLines CodeLayout::ProhibitSpaceIndentation
 # color = 0
 # pager =
 top = 10
@@ -1598,21 +1598,6 @@ file_lexical_variables              = :all_upper
 # Values that are always included: Dancer, Dancer2, Mo, Modern::Perl, Mojo::Base, Mojolicious::Lite, Moo, Moo::Role, Moose, Moose::Exporter, Moose::Role, Moose::Util::TypeConstraints, MooseX::NonMoose, MooseX::Role::Parameterized, MooseX::Singleton, Mouse, Mouse::Exporter, Mouse::Role, Mouse::Util::TypeConstraints, warnings.
 # equivalent_modules =
 
-# 80 x 40 for life!
-[Tics::ProhibitLongLines]
-# set_themes                         = tics
-# add_themes                         =
-# severity                           = 2
-# maximum_violations_per_document    = no_limit
-
-# No description available.
-# base_max =
-
-# No description available.
-# hard_max =
-
-# No description available.
-# pct_allowed =
 
 # (this => is => not => good)
 [Tics::ProhibitManyArrows]
