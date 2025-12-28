@@ -25,4 +25,3 @@ else
     perltidy --nostandard-output --backup-and-modify-in-place --standard-error-output --backup-file-extension=/ "$f"
   done
 fi
-
