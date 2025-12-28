@@ -148,9 +148,9 @@ subtest "Invalid field values" => sub {
   );
 
   for my $case ( keys %test_cases ) {
-    my ($valid) = validate_task_file( $test_cases{$case} );
+    my ( $valid, $error ) = validate_task_file( $test_cases{$case} );
     ok( !$valid, "$case should fail validation" );
-    ok( 1,       "$case provides error message" );
+    ok( $error,  "$case provides error message" );
   }
 }; ## end "Invalid field values" => sub
 
