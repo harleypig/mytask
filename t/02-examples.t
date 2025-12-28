@@ -166,8 +166,6 @@ for my $filename (@example_files) {
       } ## end for my $i ( 0 .. $#notes)
       ## use critic
     } ## end if ( exists $data->{notes...})
-    ## use critic
-    ## use critic
   }; ## end "Testing $filename" => sub
 } ## end for my $filename (@example_files)
 
@@ -226,4 +224,3 @@ subtest "task-with-alias.toml - alias field" => sub {
 };
 
 done_testing;
-## use critic
