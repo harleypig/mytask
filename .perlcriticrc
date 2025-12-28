@@ -5,7 +5,7 @@ severity = 5
 # allow-unsafe = 0
 profile-strictness = quiet
 # Relaxed exclusions
-exclude = TestingAndDebugging::RequireUseStrict Bangs::ProhibitBitwiseOperators ValuesAndExpressions::ProhibitAccessOfPrivateData InputOutput::ProhibitTwoArgOpen InputOutput::ProhibitBarewordFileHandles
+exclude = Bangs::ProhibitBitwiseOperators ValuesAndExpressions::ProhibitAccessOfPrivateData InputOutput::ProhibitTwoArgOpen InputOutput::ProhibitBarewordFileHandles
 # color = 0
 # pager =
 top = 10
