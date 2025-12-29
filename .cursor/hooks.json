@@ -3,7 +3,7 @@
     "hooks": {
         "beforeShellExecution": [
             {
-                "command": "./cursor/hooks.sh"
+                "command": ".cursor/hooks.sh"
             }
         ]
     }
