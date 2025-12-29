@@ -1,0 +1,10 @@
+{
+  "hooks": [
+    {
+      "event": "beforeShellExecution",
+      "commandContains": "git commit",
+      "run": ".cursor/hooks/pre-commit-hook.sh"
+    }
+  ]
+}
+
