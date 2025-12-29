@@ -5,6 +5,10 @@ allow() {
     printf '%s' '{"continue": true, "permission": "allow"}'
 }
 
+deny() {
+    printf '%s' '{"continue": false, "permission": "deny", "agentMessage": ' "'$*'}"
+}
+
 cursor_hook() {
     printf '[cursor hook] %s\n' "$@"
 }
