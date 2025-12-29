@@ -18,6 +18,5 @@
   - [x] Apply /x or suppress for long regexes in tests where appropriate.
   - [x] Decide on postderef enforcement (migrate to ->@* / ->%* or suppress in tests).
 - [x] Evaluate feasibility of severity 2; list blockers if not practical.
-- [ ] Evaluate feasibility of severity 1; list blockers if not practical.
 - [ ] Add a dedicated perlcritic CI job (non-modifying) to enforce the stricter profile.
 - [ ] Document perlcritic workflow in `docs/DEVELOPMENT.md` (how to run, common suppressions, expected severity).

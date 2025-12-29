@@ -27,6 +27,7 @@ Track milestone progress. All milestone details, open questions, and decisions l
 ## Perlcritic Follow-ups
 
 - [ ] Refactor `t/02-examples.t` to lower main complexity and remove the `Modules::ProhibitExcessMainComplexity` suppression once the helper structure is in place.
+- [ ] Evaluate feasibility of severity 1 for perlcritic; list blockers if not practical.
 
 ## Commitizen Configuration Follow-ups
 
