@@ -388,6 +388,51 @@ pre-commit hook. Quick setup:
 Docs and options: [githook-perltidy README](https://github.com/mlawren/githook-perltidy).
 Set `NO_GITHOOK_PERLTIDY=1` to temporarily skip the hook if needed.
 
+## Perlcritic Workflow
+
+Perlcritic is configured in `.perlcriticrc` (current defaults:
+`severity = 2`, `profile-strictness = fatal`, `allow-unsafe = 0`,
+excludes: `Tics::ProhibitLongLines`, `CodeLayout::ProhibitSpaceIndentation`).
+Key points:
+
+* Prefer fixes over suppressions; when needed, use the narrowest
+  `## no critic` with a short rationale (see `WORKFLOW.md` for guidance on
+  tests, `$@`, regex style, and equality checks).
+* Test files may carry targeted suppressions for test-only patterns; document
+  why.
+* Keep constants on the left in equality checks where readable; prefer `qr//x`
+  for long regexes.
+
+How to run:
+
+```bash
+source scripts/local-env.sh
+
+# Non-modifying lint
+scripts/run-perlcritic.sh lib t
+
+# Via make
+make critic
+
+# Via pre-commit (checks-only config)
+pre-commit run perlcritic --all-files
+
+# Full suite (fix config runs perlcritic plus other hooks)
+pre-commit run --all-files --config .pre-commit-config-fix.yaml
+```
+
+Hooks:
+
+* `.pre-commit-config.yaml`: `perlcritic` (non-modifying, `types: [perl]`).
+* `.pre-commit-config-fix.yaml`: same entry (non-modifying; runs alongside
+  other fix-mode hooks).
+
+Common suppressions to avoid unless necessary:
+
+* Broad `## no critic` at file scope.
+* Suppressing layout policies instead of re-tidying (except where tests need
+  targeted allowances).
+
 ## Contributing
 
 For detailed contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
